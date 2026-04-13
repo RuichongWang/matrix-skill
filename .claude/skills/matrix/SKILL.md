@@ -184,18 +184,10 @@ Things that are true but not obvious — the stuff that surprises people who jus
 
 ### Read the skill convention first
 
-Before writing any output skill file, read the skill-creator skill for the authoritative
-skill authoring convention — file structure, frontmatter fields, description writing rules,
-progressive disclosure pattern, and the `references/` directory pattern:
-
-```bash
-cat ~/.claude/plugins/cache/claude-plugins-official/skill-creator/*/skills/skill-creator/SKILL.md
-```
-
-Pay particular attention to:
-- **Anatomy of a Skill** — the directory structure and three-level loading system
-- **Frontmatter** — `name` and `description` are required; `description` is the primary trigger mechanism, make it pushy
-- **Progressive disclosure** — SKILL.md body under ~500 lines; overflow goes in `references/`
+Before writing any output skill file, load the official Claude Code skill-creator skill.
+It contains the authoritative convention for skill authoring — file structure, frontmatter,
+description writing rules, and the progressive disclosure pattern. Follow it when writing
+the output skill file.
 
 ### File placement
 
