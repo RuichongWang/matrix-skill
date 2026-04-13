@@ -182,34 +182,58 @@ Things that are true but not obvious — the stuff that surprises people who jus
 
 ## Step 5: Write the file
 
+### File placement
+
+**Broad mode** → `~/.claude/skills/<domain>/SKILL.md`
+**Deep mode** → `~/.claude/skills/<domain>/references/<subtopic>.md`
+
+Deep dives live in `references/` so they follow the progressive disclosure pattern — Claude loads
+the broad SKILL.md first, then reads deep dives from `references/` only when that subtopic is relevant.
+Keep each file under ~500 lines; if content exceeds this, split into additional reference files.
+
 ```bash
-mkdir -p ~/.claude/skills/<domain>
+mkdir -p ~/.claude/skills/<domain>/references
 ```
 
-**Broad mode** → write to `~/.claude/skills/<domain>/SKILL.md`
-**Deep mode** → write to `~/.claude/skills/<domain>/<subtopic>.md`
-  (multiple deep dives accumulate under the same domain directory)
+### Frontmatter
 
-Frontmatter:
+The `description` field is the **primary trigger mechanism** — it determines when Claude automatically
+loads this skill. Make it active and specific: list the domain name, key subfields, and all the
+contexts where this knowledge should be loaded. Be pushy — err toward over-triggering rather than
+under-triggering.
+
+**Broad mode frontmatter:**
 ```
 ---
-name: <domain> [<subtopic>]
+name: <domain>
 description: |
-  [Broad: "Domain knowledge for <domain> — overview of core concepts, mechanisms, and facts."]
-  [Deep: "Deep dive into <subtopic> within <domain> — mechanisms, current knowledge, applications."]
-type: domain-knowledge
-mode: broad | deep
+  <Domain> knowledge skill. Load whenever the user asks about <domain>, <subfield 1>,
+  <subfield 2>, <subfield 3>, or anything involving <key concept>. Also load for
+  <adjacent contexts where this knowledge is useful>.
 level: <1–10>
 generated: <YYYY-MM-DD>
 ---
 ```
 
-If a skill file already exists:
+**Deep mode frontmatter** (in `references/<subtopic>.md`):
+```
+---
+name: <domain>/<subtopic>
+description: |
+  Deep dive into <subtopic> within <domain>. Load when the user asks specifically about
+  <subtopic>, <related term>, or <adjacent concept> in the context of <domain>.
+level: <1–10>
+generated: <YYYY-MM-DD>
+---
+```
+
+**No extra fields** — don't add `type:`, `mode:`, or other non-standard frontmatter fields.
+The only required fields are `name` and `description`; `level` and `generated` are useful metadata.
+
+### Existing file handling
+
 - **Same or lower level requested**: ask "Already have `<domain>` at level X. Overwrite, or add a deep dive on a subtopic instead?"
-- **Higher level requested** (upgrade): read the existing file, then rewrite it in place —
-  keeping all sections but expanding "How it works", "Important facts", and "What's still unknown"
-  with the deeper content the new level warrants. Sections that are already sufficient stay as-is.
-  Update the `level:` field in frontmatter to the new level.
+- **Higher level requested** (upgrade): read the existing file, rewrite it in place — expand thin sections, keep sufficient ones, update the `level:` field.
 
 ---
 
@@ -226,7 +250,14 @@ If the file already exists, ask: "Already have a `<domain>` skill from <date>. O
 
 ## Quality check before writing
 
+**Content:**
 - [ ] Does the content contain actual facts, processes, and mechanisms — not just descriptions of the domain?
 - [ ] Could someone read this and learn something concrete they didn't know before?
 - [ ] Are there specific named examples, numbers, or processes — not just categories?
 - [ ] Is it free of filler phrases like "it's important to understand" or "experts know that"?
+- [ ] Is the file under ~500 lines? If not, split overflow into `references/<subtopic>.md` files.
+
+**Description / triggering:**
+- [ ] Does the description list the domain name AND key subfields AND adjacent contexts?
+- [ ] Is it specific enough that Claude would load it for relevant conversations but not unrelated ones?
+- [ ] Would a working practitioner in this domain recognize the description as covering their field?

@@ -1,12 +1,11 @@
 ---
 name: medium-blog-writing
 description: |
-  Domain knowledge for medium-blog-writing — overview of core concepts, mechanisms, and facts.
-  Covers the distribution system (Boost vs. General vs. Network), earnings mechanics, headline
-  patterns, article structure, tag strategy, AI content policy, and what actually separates
-  widely-read articles from ignored ones.
-type: domain-knowledge
-mode: broad
+  Medium platform knowledge skill. Load whenever the user is writing, editing, or publishing
+  a post on Medium — or asking about Medium distribution, Boost, earnings, curation, tags,
+  headlines, article structure, or the Partner Program. Also load when the user wants to
+  grow their Medium audience, understand why an article underperformed, or choose which
+  publication to submit to.
 level: 7
 generated: 2026-04-13
 ---
