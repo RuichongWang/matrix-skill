@@ -1,24 +1,24 @@
 ---
-title: "The gap between system prompts and RAG: I built a domain knowledge injection layer for Claude"
+title: "The 'I Know Kung Fu' Moment for AI Agents"
 subtitle: "RAG gives your model more facts. It doesn't change how it reasons. Here's the fix."
-tags: artificial-intelligence, programming, software-engineering, llm, claude-ai
+tags: artificial-intelligence, programming, software-engineering, machine-learning, llm
 audience: AI engineers, technical builders
 word_count: ~1,500
 ---
 
-# The gap between system prompts and RAG: I built a domain knowledge injection layer for Claude
+# The 'I Know Kung Fu' Moment for AI Agents
 
 *RAG gives your model more facts. It doesn't change how it reasons. Here's the fix.*
 
 ---
 
-Say you're building an eval pipeline for your agent. Your LLM judge is scoring 94% accuracy — looks solid. But its true negative rate is below 25%: it agrees with nearly everything, passing bad outputs as good. Your [SWE-bench Verified](https://www.swebench.com/) score is 72%. Your [SWE-bench Pro](https://labs.scale.com/leaderboard/swe_bench_pro_public) score is 19%. And the 14 system-level failure modes Berkeley documented in multi-agent pipelines? None of them show up in your per-agent evals.
+Your agent is frozen in amber. Training cutoffs mean its knowledge stopped accruing 12–24 months ago. It reasons like a generalist regardless of domain. And it forgets everything between sessions.
 
-The model doesn't know about [TRAJECT-Bench](https://arxiv.org/abs/2510.04550) — the 2025 trajectory-aware benchmark that separates tool selection accuracy from argument correctness at each step. It doesn't know that [AgentEvals](https://github.com/langchain-ai/agentevals) (LangChain, 2025) enables trajectory match eval with or without a reference trace. It doesn't know that position bias flips LLM judge verdicts in 10–30% of comparisons when responses are swapped.
+You can fine-tune it — expensive, months of work, locked to a snapshot. You can build a RAG pipeline — gives it more facts, doesn't change how it reasons, and takes weeks you don't have. Or you can do what Neo does: jack in, and know kung fu.
 
-You're not going to fine-tune your way to eval coverage. You're not going to build a custom observability stack every time you move domains. And a static system prompt with eval guidance goes stale as the field moves.
+One command. Under a minute. Your agent goes online, synthesizes practitioner-level knowledge on any domain — eval frameworks, patent law, CRISPR, negotiation tactics — and saves it as a persistent, auto-loading skill. No retraining. No retrieval infrastructure. The knowledge compounds across every session after that.
 
-So you hit the wall. And here's the thing most people miss: it's not one wall.
+I called it `/matrix`. Here's what it does, what it can't do, and why the architecture actually works.
 
 ---
 
@@ -28,17 +28,13 @@ The standard move is to call this a knowledge cutoff problem and reach for RAG. 
 
 Here are the three:
 
-**Frozen.** Training cutoffs mean production models run on knowledge that's 12–24 months stale. You can tell the model the current date; you can't give it knowledge it doesn't have.
+**Frozen.** The one everyone reaches for RAG to solve. Stale training data, fresh retrieval. Partially works.
 
-**Generic.** Models are trained on everything. They reason at the level of a well-read generalist. A cardiologist asking about drug interactions gets an answer calibrated for someone who just learned what a P450 enzyme is. It's not wrong — it's pitched at the wrong level.
+**Generic.** The one RAG doesn't touch. Models are trained on everything, so they reason at the level of a well-read generalist — regardless of what you're asking. A cardiologist asking about drug interactions gets an answer calibrated for someone who just learned what a P450 enzyme is. It's not wrong. It's pitched at the wrong level. Dumping more documents into a retrieval store doesn't fix this — the model is still reasoning from a generalist baseline, now with more sources to cite.
 
-**Stateless.** Every session starts from scratch. Domain context, vocabulary, project assumptions — gone. Nothing accumulates.
+**Stateless.** The one nobody talks about. Every session starts from scratch. Domain vocabulary, project assumptions, the failure modes your team has already learned to watch for — gone. The model re-learns the terrain from whatever you put in the system prompt, every single time. Nothing compounds.
 
-RAG addresses Frozen, partially. It does nothing for Generic or Stateless. And this is the part that actually matters: **RAG gives your model more facts. It doesn't change how it reasons.** You can dump a hundred eval papers into a retrieval store and the model will still miss that position bias flips judge verdicts in 10–30% of swapped comparisons — because it's retrieving passages to cite, not reasoning from a practitioner's baseline.
-
-Changing reasoning posture requires changing what the model *assumes* walking into a conversation — what vocabulary is baseline, what to skip, what the live questions in the field are. That's not a retrieval problem. It's a context architecture problem.
-
-There's a scene in The Matrix where Neo sits in a chair, a cable jacks in, and seconds later: "I know kung fu." That image points at something real. Most domain knowledge you actually need — eval frameworks, benchmark findings, clinical trial results, regulatory timelines — is already on the web. The problem isn't access. It's that nobody built a clean framework to pull it in, synthesize it at the right depth, and inject it as persistent, reusable context. So I built one. I called it `/matrix`.
+**RAG gives your model more facts. It doesn't change how it reasons.** Fixing Generic and Stateless requires changing what the model *assumes* walking into a conversation — what vocabulary is baseline, what to skip, what the live questions in the field are. That's not a retrieval problem. It's a context architecture problem.
 
 ---
 
@@ -106,7 +102,7 @@ One command per domain. The depth is selectable. The library accumulates.
 
 ## The Architecture
 
-This is built for **[Claude Code](https://claude.ai/code)** specifically, using its skill-loading system. Each skill file includes frontmatter with a description telling Claude when it's relevant. Claude Code scans the `~/.claude/skills/` directory at session start; when a task touches a domain, the matching skill loads automatically into context. No manual injection. No explicit include. The skill library is just a directory — readable, editable, version-controllable.
+The reference implementation is built for **[Claude Code](https://claude.ai/code)**, using its skill-loading system — but the pattern is portable to any agent framework that supports persistent context injection. In Claude Code, each skill file includes frontmatter with a description telling the agent when it's relevant. Claude Code scans the `~/.claude/skills/` directory at session start; when a task touches a domain, the matching skill loads automatically into context. No manual injection. No explicit include. The skill library is just a directory — readable, editable, version-controllable.
 
 ```
 ~/.claude/skills/
@@ -119,6 +115,8 @@ This is built for **[Claude Code](https://claude.ai/code)** specifically, using 
 Depth is controlled by a level parameter — an integer from 1 to 10 appended to the command. Level 1 is introductory (concepts, why it matters). Level 5 is informed non-expert (mechanisms, named models, current consensus). Level 9 is expert/research depth (specific findings, unresolved debates, assumes full vocabulary). The examples above were run at levels 6–8.
 
 Skills upgrade in place. Run `/matrix crispr 9` on an existing skill and Claude reads what's there, identifies the thin sections, and deepens them — without rebuilding from scratch. Domain knowledge compounds across sessions the same way code dependencies do: you add to the library, you don't rebuild it.
+
+The primitives aren't new. Web search exists. Structured prompts exist. What hasn't materialized is a clean assembly: depth-calibrated synthesis, critic verification, and a library that auto-loads across every session — so you're not rebuilding domain context ad hoc every time you switch tasks.
 
 ---
 
