@@ -12,9 +12,9 @@ word_count: ~1,500
 
 ---
 
-Say you're building an eval pipeline for your agent. Your LLM judge is scoring 94% accuracy — looks solid. But its true negative rate is below 25%: it agrees with nearly everything, passing bad outputs as good. Your SWE-bench Verified score is 72%. Your SWE-bench Pro score is 19%. And the 14 system-level failure modes Berkeley documented in multi-agent pipelines? None of them show up in your per-agent evals.
+Say you're building an eval pipeline for your agent. Your LLM judge is scoring 94% accuracy — looks solid. But its true negative rate is below 25%: it agrees with nearly everything, passing bad outputs as good. Your [SWE-bench Verified](https://www.swebench.com/) score is 72%. Your [SWE-bench Pro](https://labs.scale.com/leaderboard/swe_bench_pro_public) score is 19%. And the 14 system-level failure modes Berkeley documented in multi-agent pipelines? None of them show up in your per-agent evals.
 
-The model doesn't know about TRAJECT-Bench — the 2025 trajectory-aware benchmark that separates tool selection accuracy from argument correctness at each step. It doesn't know that AgentEvals (LangChain, 2025) enables trajectory match eval with or without a reference trace. It doesn't know that position bias flips LLM judge verdicts in 10–30% of comparisons when responses are swapped.
+The model doesn't know about [TRAJECT-Bench](https://arxiv.org/abs/2510.04550) — the 2025 trajectory-aware benchmark that separates tool selection accuracy from argument correctness at each step. It doesn't know that [AgentEvals](https://github.com/langchain-ai/agentevals) (LangChain, 2025) enables trajectory match eval with or without a reference trace. It doesn't know that position bias flips LLM judge verdicts in 10–30% of comparisons when responses are swapped.
 
 You're not going to fine-tune your way to eval coverage. You're not going to build a custom observability stack every time you move domains. And a static system prompt with eval guidance goes stale as the field moves.
 
@@ -50,7 +50,7 @@ The command:
 /matrix ai-agent-evals
 ```
 
-Claude runs web searches, synthesizes what it finds into a structured skill file at practitioner depth — assumes vocabulary, skips basics, covers active debates — and saves it to your skill library. Here's what the agent evals skill actually contains, verbatim:
+Claude runs web searches, synthesizes what it finds into a structured skill file at practitioner depth — assumes vocabulary, skips basics, covers active debates — and saves it to your skill library. Here's what the [agent evals skill](https://github.com/RuichongWang/matrix-skill/tree/main/examples/ai-agent-evals) actually contains, verbatim:
 
 > *The silent failure problem: an agent tasked with reporting current inventory gives the right number — pulled from last year's report by mistake. Final output: pass. Process: wrong. Standard accuracy metrics miss this entirely.*
 >
@@ -60,7 +60,7 @@ Claude runs web searches, synthesizes what it finds into a structured skill file
 >
 > *SWE-bench Pro gap: models scoring 70%+ on Verified collapse to ~23% on Pro. Treat Verified scores as a floor, not a target.*
 >
-> *MAST taxonomy (Berkeley): 14 distinct system-level failure modes in multi-agent pipelines — none detectable by evaluating individual agents in isolation.*
+> *[MAST taxonomy](https://arxiv.org/abs/2512.07497) (Berkeley): 14 distinct system-level failure modes in multi-agent pipelines — none detectable by evaluating individual agents in isolation.*
 
 That last one is the kind of finding that changes how you architect your eval suite. It's not in the LangChain docs. It came from synthesizing 2024–2025 research across benchmarks, framework releases, and practitioner write-ups.
 
@@ -70,43 +70,43 @@ But the more important point is what the skill *doesn't* do: it doesn't just giv
 
 ## The Same Command, Any Domain
 
-**`/matrix negotiation`**
+**[`/matrix negotiation`](https://github.com/RuichongWang/matrix-skill/tree/main/examples/negotiation)**
 
 > *First offers correlate ~0.50 with final outcomes — anchoring is one of the highest-leverage moves in any negotiation, not just an opener.*
 > *Reactive devaluation: parties automatically discount proposals from an adversary regardless of content — a proposal you'd accept from a neutral party gets rejected when it comes from the other side.*
 
 ---
 
-**`/matrix patent-law`**
+**[`/matrix patent-law`](https://github.com/RuichongWang/matrix-skill/tree/main/examples/patent-law)**
 
 > *PTAB institution rates collapsed from ~75% to ~35% in late 2025 after USPTO Director Squires assumed personal control of institution decisions — all 34 petitions he reviewed were denied. Fintiv discretionary denials surged 630% year-over-year.*
 > *An IPR petition must be filed within 1 year of service of a complaint — missing this window makes the petition time-barred regardless of merit.*
 
 ---
 
-**`/matrix crispr`**
+**[`/matrix crispr`](https://github.com/RuichongWang/matrix-skill/tree/main/examples/crispr)**
 
 > *Baby KJ: first truly personalized CRISPR therapy, designed and dosed in the patient's first six months under FDA expanded access; NEJM May 2025.*
 > *SNP-dependent off-targets: individual SNPs can create or destroy PAM sequences, generating off-targets not predicted by reference genome-based design tools — particularly relevant for individuals of African ancestry.*
 
 ---
 
-**`/matrix machine-learning`**
+**[`/matrix machine-learning`](https://github.com/RuichongWang/matrix-skill/tree/main/examples/machine-learning)**
 
-> *Chinchilla revision: compute-optimal training ≠ deployment-optimal. When inference cost matters, train on up to 10,000 tokens per parameter — not 20. Now standard practice in Llama 3, Mistral, Gemini Nano.*
-> *DeepSeek-V3's MLA compresses KV into low-rank latent vectors: 93% KV cache reduction, ~6× generation throughput increase.*
+> *[Chinchilla revision](https://arxiv.org/abs/2203.15556): compute-optimal training ≠ deployment-optimal. When inference cost matters, train on up to 10,000 tokens per parameter — not 20. Now standard practice in Llama 3, Mistral, Gemini Nano.*
+> *[DeepSeek-V3's MLA](https://arxiv.org/abs/2412.19437) compresses KV into low-rank latent vectors: 93% KV cache reduction, ~6× generation throughput increase.*
 
 ---
 
 One command per domain. The depth is selectable. The library accumulates.
 
-*(These are snippets — each skill file runs several hundred lines with full citations. Read them in the [repo](https://github.com/RuichongWang/matrix-skill). Synthesized from web sources; verify domain-specific data against primary sources before professional use.)*
+*(These are snippets — each skill file runs several hundred lines with full citations. Read them in the [examples directory](https://github.com/RuichongWang/matrix-skill/tree/main/examples). The [matrix skill itself](https://github.com/RuichongWang/matrix-skill/blob/main/.claude/skills/matrix/SKILL.md) is also open. Synthesized from web sources; verify domain-specific data against primary sources before professional use.)*
 
 ---
 
 ## The Architecture
 
-This is built for **Claude Code** specifically, using its skill-loading system. Each skill file includes frontmatter with a description telling Claude when it's relevant. Claude Code scans the `~/.claude/skills/` directory at session start; when a task touches a domain, the matching skill loads automatically into context. No manual injection. No explicit include. The skill library is just a directory — readable, editable, version-controllable.
+This is built for **[Claude Code](https://claude.ai/code)** specifically, using its skill-loading system. Each skill file includes frontmatter with a description telling Claude when it's relevant. Claude Code scans the `~/.claude/skills/` directory at session start; when a task touches a domain, the matching skill loads automatically into context. No manual injection. No explicit include. The skill library is just a directory — readable, editable, version-controllable.
 
 ```
 ~/.claude/skills/
