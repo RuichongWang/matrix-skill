@@ -1,6 +1,15 @@
-# I Know Kung Fu: How I Gave My AI a Permanent Memory for Any Domain
+---
+title: "I Built a Matrix Skill Download for My AI. The First Thing It Learned Was How to Write This Post."
+subtitle: "Before writing this post, I downloaded domain expertise I didn't have. Here's what that means — and how it changed the article you're reading."
+cover_image: Weixin Image_20260413101206_50_86.jpg
+tags: artificial-intelligence, technology, productivity, programming, claude-ai
+publication: Start It Up (preferred) or Better Humans
+word_count: ~1,600
+---
 
-*Before writing this post, I downloaded domain expertise I didn't have. Here's what that means.*
+# I Built a Matrix Skill Download for My AI. The First Thing It Learned Was How to Write This Post.
+
+*Before writing this post, I downloaded domain expertise I didn't have. Here's what that means — and how it changed the article you're reading.*
 
 ---
 
@@ -10,57 +19,33 @@ There's a scene in The Matrix where Neo sits in a chair, a cable jacks in, and s
 
 That image has lived in my head for 25 years. Not because it's cool — because it points at something real about the gap between knowing facts and actually reasoning inside a domain.
 
----
-
-## The Gap Nobody Talks About
-
-Ask Claude about molecular biology. You'll get a coherent answer.
-
-Ask it about patent law, options trading, epidemiology — coherent answers, all of them.
-
-LLMs have read more than any human ever will. But reading about something and reasoning *inside* it are different things.
-
-A biologist looks at an experimental result and immediately asks: "What's the control condition?" A patent attorney reads a claim and instantly spots the prior art risk. That's not knowledge. That's a lens — a way of moving through a domain that only comes from deep immersion.
-
-Current AI gives you the facts. The lens is harder.
+So I built the closest thing I could.
 
 ---
 
-## What If You Could Download It?
+## So I Built It
 
-Here's the idea: instead of asking an AI to recall what it already knows, you pull fresh knowledge from the web, synthesize it into structured expertise, and save it as a permanent skill file.
+The idea: instead of asking an AI to recall what it already knows, pull fresh knowledge from the web, synthesize it into structured expertise, and save it as a permanent skill file.
 
 Not a chat session. Not a one-time lookup. A file that lives in your AI's skill library and changes how it reasons whenever that domain comes up.
 
-You type:
+I built this as a skill for Claude Code and called it `/matrix`. You type a domain, set a depth level, and it runs web searches, synthesizes what it finds, and writes the result to your skill library.
 
-```
-/matrix biology
-```
-
-Claude searches the web, synthesizes how biology actually works — cells, DNA, photosynthesis, evolution — and writes it as a skill. Next time you're reading a genetics paper or discussing a treatment, that knowledge is already loaded.
-
-Go deeper:
-
-```
-/matrix biology photosynthesis 9
-```
-
-Now you get research-level depth. Not "plants make oxygen" but the actual mechanism: light-dependent reactions in the thylakoid membrane, the Calvin cycle in the stroma, what's still unsolved at the frontier.
-
-The `9` is a depth dial. Level 2 is a knowledgeable friend explaining it over coffee. Level 9 is closer to a domain expert who's done their homework.
+The depth dial goes from 2 to 9. Level 2 is a knowledgeable friend explaining it over coffee. Level 9 is closer to a domain expert who's done their homework.
 
 ---
 
-## Here's What It Actually Produces
+## The First Thing I Downloaded Was How to Write This Post
 
-Before writing this post, I ran:
+Before writing a single word, I ran:
 
 ```
 /matrix medium-blog-writing 7
 ```
 
-Claude ran 10 web searches, synthesized what it found, and wrote this to my skill library:
+<!-- INSERT SCREENSHOT: Screenshot 2026-04-13 at 10.07.02.png — caption: "Claude running 7 web searches and synthesizing them into a skill file." -->
+
+Claude ran 7 web searches, synthesized what it found, and wrote a skill file to my library in under 3 minutes. Here's a sample of what it produced:
 
 > *Medium's Boost tier — the top curation tier — requires human nomination from a publication editor, then confirmation from Medium's internal curation team. Most viral articles (10k+ reads) were Boosted. Getting there is the single highest-leverage action on the platform.*
 >
@@ -71,6 +56,46 @@ Claude ran 10 web searches, synthesized what it found, and wrote this to my skil
 I didn't know the member read ratio mechanic before running this. Or that `#ai` has 4,000 followers on Medium while `#artificial-intelligence` has 674,000. Or that the Boost nomination pipeline goes through publication editors — meaning publishing solo removes you from the main nomination pathway entirely.
 
 That's the difference. Not facts you could Google. Knowledge that changes how you act.
+
+---
+
+## Now Here's the Recursive Part
+
+The article you're reading was written using those findings.
+
+The skill told me the first paragraph should be under 40 words — I counted. It told me ~1,600 words is the earnings sweet spot — this article is targeting that. It told me question headlines lower CTR — I rewrote the title three times until it was declarative. It told me a visual break at the 40–50% scroll depth mark increases engagement by 67% — the screenshot above is placed there deliberately.
+
+The skill also flagged that a low member read ratio actively penalizes earnings, not just neutrally. Meaning: a clickbait title that gets opens but no reads is worse than no traffic at all. That changed how I thought about the title.
+
+None of this came from intuition. It came from a 3-minute download.
+
+---
+
+## It Works for Any Domain
+
+The same command works across any field. A few I've run:
+
+```
+/matrix options-trading 7
+```
+
+Output: the actual mechanics of how options are priced (Black-Scholes inputs, what IV crush means, how theta decay accelerates near expiry). Not "calls give you the right to buy" — the level where you can actually reason about a position.
+
+```
+/matrix patent-law prior-art-search 8
+```
+
+Output: exactly how prior art invalidates a claim, what counts as public disclosure, how to read a patent filing to spot the prosecution history estoppel. Targeted enough that a founder can read their own competitive landscape without paying a lawyer for a first pass.
+
+```
+/matrix cardiology drug-interactions 9
+```
+
+Output: CYP450 enzyme pathways, QT prolongation risk by drug class, why warfarin dosing is so sensitive to diet and co-medications. The level where a cardiologist stops having to re-explain context every session.
+
+The depth dial is the key lever. Level 3 is a well-explained Wikipedia article. Level 9 is dense — assumes vocabulary, references specific mechanisms, covers unsettled debates. Same domain, completely different knowledge surface.
+
+Each output is a Markdown file — readable, editable, version-controllable, with sources cited.
 
 ---
 
@@ -92,11 +117,12 @@ The files accumulate:
 
 ```
 ~/.claude/skills/
-  biology/SKILL.md           ← broad survey, level 5
-  biology/photosynthesis.md  ← deep dive, level 9
-  patent-law/SKILL.md
-  medium-blog-writing/SKILL.md
-  options-trading/SKILL.md
+  options-trading/SKILL.md              ← broad survey, level 7
+  patent-law/SKILL.md                   ← broad survey, level 6
+  patent-law/references/prior-art.md    ← deep dive, level 8
+  cardiology/SKILL.md                   ← broad survey, level 6
+  cardiology/references/drug-interactions.md  ← deep dive, level 9
+  medium-blog-writing/SKILL.md          ← broad survey, level 7
 ```
 
 Each one is plain Markdown — readable, editable, version-controllable. Claude loads the relevant ones automatically when they're needed.
@@ -113,13 +139,9 @@ And skills upgrade. Run `/matrix biology 8` after you already have a level-5 fil
 
 The obvious use is access. Someone without a law degree getting real legal reasoning. A founder who can actually read their own biotech patent landscape. A journalist who can distinguish settled science from active debate in a climate paper.
 
-But the more interesting shift is in how you *work* with AI day to day.
+But the more interesting shift is cumulative. Every domain you download becomes a persistent layer the AI draws on. Your instance of Claude, over time, starts to reflect your actual knowledge needs: the industries you cover, the technical areas you care about, the domains where you need to think clearly.
 
-Right now most AI interaction is reactive — you ask, it answers, the context evaporates. Skills make it cumulative. Every domain you download becomes a persistent layer the AI draws on. Your instance of Claude, over time, starts to reflect your actual knowledge needs: the industries you cover, the technical areas you care about, the domains where you need to think clearly.
-
-This is different from fine-tuning a model. You're not changing the weights. You're building a library of structured context that loads when relevant — the same way a good consultant walks into a meeting having already done their homework.
-
-The people who benefit most aren't generalists trying to fake expertise. They're domain experts who want their AI to stop giving them undergrad-level answers in their own field. A cardiologist who wants Claude to reason about drug interactions without needing to explain what a P450 enzyme is. A securities lawyer who wants to discuss case strategy without re-explaining what a material adverse change clause does every session.
+The people who benefit most aren't generalists trying to fake expertise. They're domain experts who want their AI to stop giving them undergrad-level answers in their own field. A cardiologist who wants Claude to reason about drug interactions without explaining what a P450 enzyme is every session. A securities lawyer who wants to discuss case strategy without re-explaining what a material adverse change clause does.
 
 ---
 
@@ -129,9 +151,7 @@ A synthesized skill is only as good as what's findable on the web. It degrades f
 
 Level 9 isn't a PhD. It's a well-read graduate student who did their homework.
 
-The other open question is eval: how do you know the downloaded skill actually makes your AI better at a domain? Right now the quality bar is human judgment — "would an expert read this and say it's right?" That's not a metric. It's a vibe check.
-
-There's also the staleness problem. A skill synthesized today captures what's on the web today. Domains move. You have to decide when to refresh, and at what depth. The upgrade mechanic helps — running `/matrix <domain> 8` over an existing level-5 skill reads the current file and deepens only the thin sections — but there's no automatic trigger. That's still a judgment call.
+The quality bar right now is human judgment — "would an expert read this and say it's right?" That's not a metric. It's a vibe check. And skills go stale: a file synthesized today captures what's on the web today. Domains move. The upgrade mechanic helps — running `/matrix <domain> 8` deepens only the thin sections — but there's no automatic trigger. That's still a judgment call.
 
 There's real work to be done here.
 
@@ -143,11 +163,11 @@ Neo's download was instant and perfect. What we have is slower and messier — w
 
 But the direction is the same.
 
-Before I wrote this post, I loaded a skill. The skill told me that a 7-minute read at 6th-grade reading level gets 75% more recommends. That the first paragraph should be under 40 words. That member read ratio is the hidden mechanic most writers don't know about.
+Before I wrote this post, I loaded a skill. That skill shaped the title, the length, the structure, the tags, the placement of the screenshot you saw above. I didn't know any of it an hour earlier.
 
-I didn't know any of that an hour ago. Now I do — and so does every future conversation I have about writing for Medium.
+Now I do — and so does every future conversation I have about writing for Medium.
 
-The chair is ready. What do you want to know?
+The chair is ready. What do you want to download?
 
 ---
 
@@ -156,10 +176,3 @@ The chair is ready. What do you want to know?
 *If this hit different than the usual AI content, follow me — I'm writing about building with AI in ways that actually change how you work.*
 
 ---
-
-<!-- PUBLISHING NOTES (remove before publish)
-Tags: #artificial-intelligence (674k), #technology, #productivity, #programming, #claude-ai
-Target publication: Start It Up or Better Humans (for Boost nomination access)
-Cover image: avoid sensational; consider a clean terminal screenshot or Matrix green-rain aesthetic (tasteful)
-Word count: ~1,580
--->
